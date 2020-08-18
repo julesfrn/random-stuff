@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <div id="app">
+    <router-view />
+  </div>
 </template>
 
 <style lang="scss">
@@ -126,5 +128,9 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+#app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+    'Helvetica Neue', sans-serif;
 }
 </style>

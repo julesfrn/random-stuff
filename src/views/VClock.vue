@@ -32,15 +32,19 @@
 export default {
   name: 'VClock',
   data: () => ({
-    now: new Date()
+    now: new Date(),
+    clockRefresh: undefined
   }),
   mounted() {
     this.updateTime()
-    setInterval(() => {
+    this.clockRefresh = setInterval(() => {
       this.now = new Date()
       this.updateTime()
       this.addTransition()
     }, 100)
+  },
+  beforeDestroy() {
+    clearInterval(this.clockRefresh)
   },
   methods: {
     updateSeconds() {

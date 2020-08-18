@@ -100,7 +100,7 @@ export default {
     async weatherAPICall() {
       if (!this.weatherData && this.latitude && this.longitude) {
         let request = await axios.get(
-          `http://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=3288f0546df12871365a679bc10a1ea4&units=metric`
+          `https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=3288f0546df12871365a679bc10a1ea4&units=metric`
         )
         this.weatherData = request.data
         this.setWeatherTheme()

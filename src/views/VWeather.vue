@@ -4,7 +4,7 @@
       <h1 class="weather__title">{{ weatherName }}</h1>
       <h2 class="weather__temp">{{ weatherTemp }}</h2>
     </div>
-    <img class="weather__img" :src="imageSrc" />
+    <img v-if="imageSrc.length > 0" class="weather__img" :src="imageSrc" />
   </div>
 </template>
 

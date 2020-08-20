@@ -165,7 +165,7 @@ export default {
 .weather__title {
   font-size: 20px;
   color: #fff;
-  opacity: 88%;
+  opacity: 0.88;
   margin: 10px;
   @media screen and (min-width: 1150px) {
     font-size: 40px;
@@ -176,7 +176,7 @@ export default {
 }
 .weather__temp {
   color: #fff;
-  opacity: 88%;
+  opacity: 0.88;
   font-weight: bold;
   font-size: 200px;
   margin: 10px;

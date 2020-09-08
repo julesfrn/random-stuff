@@ -1,5 +1,6 @@
 <template>
   <div class="clock">
+    <c-go-to-home />
     <div class="clock__frame">
       <div class="clock__hand">
         <div class="clock__hand-seconds" ref="handSeconds"></div>
@@ -29,8 +30,11 @@
 </template>
 
 <script>
+import CGoToHome from '@/components/CGoToHome.vue'
+
 export default {
   name: 'VClock',
+  components: { CGoToHome },
   data: () => ({
     now: new Date(),
     clockRefresh: undefined
@@ -185,6 +189,42 @@ export default {
     &:nth-child(12) {
       transform: rotate(330deg);
     }
+  }
+}
+@media screen and (height: 200px) {
+  .clock {
+    font-size: 12px;
+  }
+  .clock__frame {
+    width: 150px;
+    height: 150px;
+  }
+  .clock__face {
+    span {
+      height: 130px;
+    }
+    &::after {
+      height: 7px;
+      width: 7px;
+    }
+  }
+  .clock__hand-hour {
+    width: 4px;
+    height: 30px;
+    border-radius: 2px 2px 0;
+    bottom: 15px;
+  }
+  .clock__hand-minutes {
+    width: 3px;
+    height: 45px;
+    border-radius: 1.5px 1.5px 0;
+    bottom: 22.5px;
+  }
+  .clock__hand-seconds {
+    width: 1px;
+    height: 45px;
+    border-radius: none;
+    bottom: 22.5px;
   }
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="weather" ref="weatherBackground">
+    <c-go-to-home />
     <div class="weather__text">
       <h1 class="weather__title">{{ weatherName }}</h1>
       <h2 class="weather__temp">{{ weatherTemp }}</h2>
@@ -10,6 +11,7 @@
 
 <script>
 import axios from 'axios'
+import CGoToHome from '@/components/CGoToHome.vue'
 
 const THUNDERSTORM = {
   day: {
@@ -82,6 +84,7 @@ const weatherThemes = [CLOUD, SNOW, THUNDERSTORM, RAIN, CLEAR, LIGHTLY_CLOUDED]
 
 export default {
   name: 'VWeather',
+  components: { CGoToHome },
   data: () => ({
     latitude: undefined,
     longitude: undefined,
@@ -195,6 +198,20 @@ export default {
   }
   @media screen and (min-width: 1430px) {
     width: 652px;
+  }
+}
+@media screen and (height: 200px) {
+  .weather {
+    flex-direction: row;
+  }
+  .weather__img {
+    width: 100px;
+  }
+  .weather__title {
+    font-size: 16px;
+  }
+  .weather__temp {
+    font-size: 23px;
   }
 }
 </style>

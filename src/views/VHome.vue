@@ -1,28 +1,20 @@
 <template>
   <div>
-    <h1 class="home__title">My Random Stuff</h1>
+    <h1 class="home__title">Mini Projects</h1>
     <div class="home__body">
-      <c-preview-item route="horloge" title="Horloge analogique" />
-      <c-preview-item route="meteo" title="Météo locale" />
+      <CPreviewItem route="horloge" title="Horloge analogique" />
+      <CPreviewItem route="meteo" title="Météo locale" />
     </div>
   </div>
 </template>
 
-<script>
-import CPreviewItem from '@/components/CPreviewItem.vue'
-
-export default {
-  name: 'VHome',
-  components: { CPreviewItem }
-}
+<script setup lang="ts">
+import CPreviewItem from '../components/CPreviewItem.vue'
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .home__title {
   color: #646464;
-  -webkit-text-fill-color: white; /* Will override color (regardless of order) */
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #646464;
   letter-spacing: 4px;
   font-weight: bolder;
   font-size: 35px;
@@ -33,10 +25,14 @@ export default {
 .home__body {
   margin: auto;
   width: 332px;
-  @media screen and (min-width: 668px) {
+}
+@media screen and (min-width: 668px) {
+  .home__body {
     width: 664px;
   }
-  @media screen and (min-width: 1000px) {
+}
+@media screen and (min-width: 1000px) {
+  .home__body {
     width: 996px;
   }
 }

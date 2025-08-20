@@ -1,80 +1,90 @@
 <template>
   <div class="weather" ref="weatherBackground">
-    <c-go-to-home />
+    <CGoToHome />
     <div class="weather__text">
       <h1 class="weather__title">{{ weatherName }}</h1>
       <h2 class="weather__temp">{{ weatherTemp }}</h2>
     </div>
-    <img v-if="imageSrc.length > 0" class="weather__img" :src="imageSrc" />
+    <img v-if="weatherIcon" class="weather__img" :src="weatherIcon" />
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import axios from 'axios'
 import CGoToHome from '@/components/CGoToHome.vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import thunderstorm from '../assets/thunderstorm.png'
+import sunny from '../assets/sunny.png'
+import clearNight from '../assets/clear night.png'
+import sunCloudy from '../assets/sun-cloudy.png'
+import cloudyNight from '../assets/cloudy night.png'
+import rainy from '../assets/rainy.png'
+import snowy from '../assets/snowy.png'
+import cloudy from '../assets/cloudy.png'
+import windy from '../assets/windy.png'
 
 const THUNDERSTORM = {
   day: {
-    icon: 'thunderstorm.png',
+    icon: thunderstorm,
     color: '#4599BB'
   },
   night: {
-    icon: 'thunderstorm.png',
+    icon: thunderstorm,
     color: '#061F27'
   },
   ids: [200, 201, 202, 210, 211, 212, 221, 230, 231, 232]
 }
 const CLEAR = {
   day: {
-    icon: 'sunny.png',
+    icon: sunny,
     color: '#1BBDF0'
   },
   night: {
-    icon: 'clear night.png',
+    icon: clearNight,
     color: '#111737'
   },
   ids: [800]
 }
 const LIGHTLY_CLOUDED = {
   day: {
-    icon: 'sun-cloudy.png',
+    icon: sunCloudy,
     color: '#29AAD2'
   },
   night: {
-    icon: 'cloudy night.png',
+    icon: cloudyNight,
     color: '#111737'
   },
   ids: [801, 802]
 }
 const RAIN = {
   day: {
-    icon: 'rainy.png',
+    icon: rainy,
     color: '#4D7B89'
   },
   night: {
-    icon: 'rainy.png',
+    icon: rainy,
     color: '#111737'
   },
   ids: [300, 301, 302, 310, 311, 312, 313, 314, 321, 500, 501, 502, 503, 504, 511, 520, 521, 522, 531]
 }
 const SNOW = {
   day: {
-    icon: 'snowy.png',
+    icon: snowy,
     color: '#D1E9F1'
   },
   night: {
-    icon: 'snowy.png',
+    icon: snowy,
     color: '#023646'
   },
   ids: [600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622]
 }
 const CLOUD = {
   day: {
-    icon: 'cloudy.png',
+    icon: cloudy,
     color: '#4D7B89'
   },
   night: {
-    icon: 'cloudy.png',
+    icon: cloudy,
     color: '#111737'
   },
   ids: [803, 804]
@@ -82,77 +92,66 @@ const CLOUD = {
 
 const weatherThemes = [CLOUD, SNOW, THUNDERSTORM, RAIN, CLEAR, LIGHTLY_CLOUDED]
 
-export default {
-  name: 'VWeather',
-  components: { CGoToHome },
-  data: () => ({
-    latitude: undefined,
-    longitude: undefined,
-    weatherData: undefined,
-    weatherIcon: ''
-  }),
-  async mounted() {
-    if (navigator.geolocation) {
-      await navigator.geolocation.getCurrentPosition(geoData => {
-        this.latitude = geoData.coords.latitude
-        this.longitude = geoData.coords.longitude
-      })
-    }
-  },
-  methods: {
-    async weatherAPICall() {
-      if (!this.weatherData && this.latitude && this.longitude) {
-        let request = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=3288f0546df12871365a679bc10a1ea4&units=metric`
-        )
-        this.weatherData = request.data
-        this.setWeatherTheme()
-      }
-    },
-    setWeatherTheme() {
-      let idFound = false
-      weatherThemes.forEach(theme => {
-        if (theme.ids.indexOf(this.weatherData.weather[0].id) > -1) {
-          idFound = true
-          if (this.isDay) {
-            this.weatherIcon = theme.day.icon
-            this.$refs.weatherBackground.style.background = theme.day.color
-          } else {
-            this.weatherIcon = theme.night.icon
-            this.$refs.weatherBackground.style.background = theme.night.color
-          }
-        }
-      })
-      if (!idFound) {
-        this.weatherIcon = 'windy.png'
-        this.$refs.weatherBackground.style.background = '#023646'
+const weatherBackground = ref<HTMLDivElement>()
+
+const latitude = ref<number>()
+const longitude = ref<number>()
+const weatherData = ref()
+const weatherIcon = ref('')
+
+onMounted(() => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(geoData => {
+      latitude.value = geoData.coords.latitude
+      longitude.value = geoData.coords.longitude
+    })
+  }
+})
+
+const setWeatherTheme = () => {
+  let idFound = false
+  weatherThemes.forEach(theme => {
+    if (theme.ids.indexOf(weatherData.value.weather[0].id) > -1) {
+      idFound = true
+      if (isDay.value) {
+        weatherIcon.value = theme.day.icon
+        weatherBackground.value!.style.background = theme.day.color
+      } else {
+        weatherIcon.value = theme.night.icon
+        weatherBackground.value!.style.background = theme.night.color
       }
     }
-  },
-  computed: {
-    imageSrc() {
-      return this.weatherIcon && this.weatherIcon.length > 0 ? require(`../assets/${this.weatherIcon}`) : ''
-    },
-    weatherName() {
-      return this.weatherData ? this.weatherData.name : ''
-    },
-    weatherTemp() {
-      return this.weatherData ? `${Math.round(this.weatherData.main.temp)}°` : ''
-    },
-    isDay() {
-      let now = new Date()
-      return 4 < now.getHours() < 19
-    }
-  },
-  watch: {
-    async latitude() {
-      await this.weatherAPICall()
-    }
+  })
+  if (!idFound) {
+    weatherIcon.value = windy
+    weatherBackground.value!.style.background = '#023646'
   }
 }
+
+const getWeatherData = async () => {
+  if (!weatherData.value && latitude.value && longitude.value) {
+    const { data } = await axios.get(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude.value}&lon=${longitude.value}&appid=3288f0546df12871365a679bc10a1ea4&units=metric`
+    )
+    weatherData.value = data
+    setWeatherTheme()
+  }
+}
+
+const weatherName = computed(() => {
+  return weatherData.value ? weatherData.value.name : ''
+})
+const weatherTemp = computed(() => {
+  return weatherData.value ? `${Math.round(weatherData.value.main.temp)}°` : ''
+})
+const isDay = computed(() => {
+  const now = new Date()
+  return 4 < now.getHours() && now.getHours() < 19
+})
+watch(latitude, getWeatherData)
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .weather {
   width: 100vw;
   height: 100vh;

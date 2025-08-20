@@ -7,17 +7,16 @@
   </router-link>
 </template>
 
-<script>
-export default {
-  name: 'CPreviewItem',
-  props: {
-    route: { type: String },
-    title: { type: String }
-  }
-}
+<script setup lang="ts">
+import { defineProps } from 'vue'
+
+defineProps<{
+  route: string,
+  title: string
+}>()
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .preview-item {
   display: inline-block;
   margin: 10px;

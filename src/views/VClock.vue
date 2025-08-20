@@ -1,6 +1,6 @@
 <template>
   <div class="clock">
-    <c-go-to-home />
+    <CGoToHome />
     <div class="clock__frame">
       <div class="clock__hand">
         <div class="clock__hand-seconds" ref="handSeconds"></div>
@@ -29,55 +29,52 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import CGoToHome from '@/components/CGoToHome.vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
-export default {
-  name: 'VClock',
-  components: { CGoToHome },
-  data: () => ({
-    now: new Date(),
-    clockRefresh: undefined
-  }),
-  mounted() {
-    this.updateTime()
-    this.clockRefresh = setInterval(() => {
-      this.now = new Date()
-      this.updateTime()
-      this.addTransition()
-    }, 100)
-  },
-  beforeDestroy() {
-    clearInterval(this.clockRefresh)
-  },
-  methods: {
-    updateSeconds() {
-      this.$refs.handSeconds.style.transform = `rotate(${6 * this.secondsInDay}deg)`
-    },
-    updateMinutes() {
-      this.$refs.handMinutes.style.transform = `rotate(${6 * (this.secondsInDay / 60)}deg)`
-    },
-    updateHours() {
-      this.$refs.handHours.style.transform = `rotate(${6 * (this.secondsInDay / 60 / 12)}deg)`
-    },
-    updateTime() {
-      this.updateHours()
-      this.updateMinutes()
-      this.updateSeconds()
-    },
-    addTransition() {
-      this.$refs.handMinutes.style.transition = this.$refs.handHours.style.transition = 'transform 1s'
-    }
-  },
-  computed: {
-    secondsInDay() {
-      return this.now.getHours() * 60 * 60 + this.now.getMinutes() * 60 + this.now.getSeconds()
-    }
-  }
+const now = ref(new Date())
+const intervalId = ref<number>()
+
+const secondsInDay = computed(() =>
+  now.value.getHours() * 60 * 60 + now.value.getMinutes() * 60 + now.value.getSeconds()
+)
+const handSeconds = ref<HTMLDivElement>()
+const handHours = ref<HTMLDivElement>()
+const handMinutes = ref<HTMLDivElement>()
+const updateSeconds = () => {
+  handSeconds.value!.style.transform = `rotate(${6 * secondsInDay.value}deg)`
 }
+const updateMinutes = () => {
+  handMinutes.value!.style.transform = `rotate(${6 * (secondsInDay.value / 60)}deg)`
+}
+const updateHours = () => {
+  handHours.value!.style.transform = `rotate(${6 * (secondsInDay.value / 60 / 12)}deg)`
+}
+const updateTime = () => {
+  updateHours()
+  updateMinutes()
+  updateSeconds()
+}
+
+const addTransition = () => {
+  handMinutes.value!.style.transition = handHours.value!.style.transition = 'transform 1s'
+}
+
+onMounted(() => {
+  intervalId.value = setInterval(() => {
+    now.value = new Date()
+    updateTime()
+    addTransition()
+  }, 100)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(intervalId.value)
+})
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .time {
   position: absolute;
 }
@@ -144,52 +141,52 @@ export default {
   justify-content: center;
   align-items: center;
   position: absolute;
-  &::after {
-    position: absolute;
-    content: '';
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: #aaaaaa;
-  }
-  span {
-    position: absolute;
-    height: 360px;
-    transform-origin: center center;
-    &:nth-child(2) {
-      transform: rotate(30deg);
-    }
-    &:nth-child(3) {
-      transform: rotate(60deg);
-    }
-    &:nth-child(4) {
-      transform: rotate(90deg);
-    }
-    &:nth-child(5) {
-      transform: rotate(120deg);
-    }
-    &:nth-child(6) {
-      transform: rotate(150deg);
-    }
-    &:nth-child(7) {
-      transform: rotate(180deg);
-    }
-    &:nth-child(8) {
-      transform: rotate(210deg);
-    }
-    &:nth-child(9) {
-      transform: rotate(240deg);
-    }
-    &:nth-child(10) {
-      transform: rotate(270deg);
-    }
-    &:nth-child(11) {
-      transform: rotate(300deg);
-    }
-    &:nth-child(12) {
-      transform: rotate(330deg);
-    }
-  }
+}
+.clock__face::after {
+  position: absolute;
+  content: '';
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #aaaaaa;
+}
+.clock__face span {
+  position: absolute;
+  height: 360px;
+  transform-origin: center center;
+}
+.clock__face span:nth-child(2) {
+  transform: rotate(30deg);
+}
+.clock__face span:nth-child(3) {
+  transform: rotate(60deg);
+}
+.clock__face span:nth-child(4) {
+  transform: rotate(90deg);
+}
+.clock__face span:nth-child(5) {
+  transform: rotate(120deg);
+}
+.clock__face span:nth-child(6) {
+  transform: rotate(150deg);
+}
+.clock__face span:nth-child(7) {
+  transform: rotate(180deg);
+}
+.clock__face span:nth-child(8) {
+  transform: rotate(210deg);
+}
+.clock__face span:nth-child(9) {
+  transform: rotate(240deg);
+}
+.clock__face span:nth-child(10) {
+  transform: rotate(270deg);
+}
+.clock__face span:nth-child(11) {
+  transform: rotate(300deg);
+}
+.clock__face span:nth-child(12) {
+  transform: rotate(330deg);
 }
 @media screen and (height: 200px) {
   .clock {
@@ -199,14 +196,12 @@ export default {
     width: 150px;
     height: 150px;
   }
-  .clock__face {
-    span {
-      height: 130px;
-    }
-    &::after {
-      height: 7px;
-      width: 7px;
-    }
+  .clock__face::after {
+    height: 7px;
+    width: 7px;
+  }
+  .clock__face span {
+    height: 130px;
   }
   .clock__hand-hour {
     width: 4px;

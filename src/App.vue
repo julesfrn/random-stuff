@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style>
 html,
 body,
 div,
@@ -130,6 +130,7 @@ table {
   border-spacing: 0;
 }
 #app {
+  position: relative;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
     'Helvetica Neue', sans-serif;
 }

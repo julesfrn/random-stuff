@@ -58,7 +58,7 @@ const updateTime = () => {
 }
 
 const addTransition = () => {
-  handMinutes.value!.style.transition = handHours.value!.style.transition = 'transform 1s'
+  handMinutes.value!.style.transition = handHours.value!.style.transition = `transform 1s`
 }
 
 onMounted(() => {

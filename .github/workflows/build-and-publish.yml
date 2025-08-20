@@ -15,6 +15,7 @@ on:
       - nginx.conf
       - package.json
       - package-lock.json
+      - .github/workflows/build-and-publish.yml
 
 env:
   REGISTRY: ghcr.io
@@ -47,3 +48,4 @@ jobs:
         with:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          platforms: linux/amd64,linux/arm64
